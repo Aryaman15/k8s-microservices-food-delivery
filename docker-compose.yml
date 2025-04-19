@@ -1,0 +1,103 @@
+version: "3"
+
+services:
+  # User Service
+  user-service:
+    build: ./user-service
+    container_name: user-service
+    ports:
+      - "3001:3001"
+    environment:
+      - MONGODB_URI=mongodb://user_db:27017/users
+    depends_on:
+      - user_db
+    networks:
+      - food-delivery-network
+
+  user_db:
+    image: mongo:4.4
+    container_name: user_db
+    volumes:
+      - user_data:/data/db
+    networks:
+      - food-delivery-network
+
+  # Restaurant Service
+  restaurant-service:
+    build: ./restaurant-service
+    container_name: restaurant-service
+    ports:
+      - "3002:3002"
+    environment:
+      - MONGODB_URI=mongodb://restaurant_db:27017/restaurants
+    depends_on:
+      - restaurant_db
+    networks:
+      - food-delivery-network
+
+  restaurant_db:
+    image: mongo:4.4
+    container_name: restaurant_db
+    volumes:
+      - restaurant_data:/data/db
+    networks:
+      - food-delivery-network
+
+  # Order Service
+  order-service:
+    build: ./order-service
+    container_name: order-service
+    ports:
+      - "3003:3003"
+    environment:
+      - MONGODB_URI=mongodb://order_db:27017/orders
+      - USER_SERVICE_URL=http://user-service:3001
+      - RESTAURANT_SERVICE_URL=http://restaurant-service:3002
+      - DELIVERY_SERVICE_URL=http://delivery-service:3004
+    depends_on:
+      - order_db
+      - user-service
+      - restaurant-service
+    networks:
+      - food-delivery-network
+
+  order_db:
+    image: mongo:4.4
+    container_name: order_db
+    volumes:
+      - order_data:/data/db
+    networks:
+      - food-delivery-network
+
+  # Delivery Service
+  delivery-service:
+    build: ./delivery-service
+    container_name: delivery-service
+    ports:
+      - "3004:3004"
+    environment:
+      - MONGODB_URI=mongodb://delivery_db:27017/deliveries
+      - ORDER_SERVICE_URL=http://order-service:3003
+    depends_on:
+      - delivery_db
+      - order-service
+    networks:
+      - food-delivery-network
+
+  delivery_db:
+    image: mongo:4.4
+    container_name: delivery_db
+    volumes:
+      - delivery_data:/data/db
+    networks:
+      - food-delivery-network
+
+networks:
+  food-delivery-network:
+    driver: bridge
+
+volumes:
+  user_data:
+  restaurant_data:
+  order_data:
+  delivery_data:

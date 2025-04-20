@@ -1,4 +1,3 @@
-text
 # Food Delivery Microservices on Kubernetes
 
 This repository demonstrates a fully functional microservices-based food delivery application built using Node.js, Express, and MongoDB. The services are containerized using Docker and orchestrated with Kubernetes. The project comprises several independent microservices along with a frontend aggregator for unified access, providing a realistic example of a production–grade microservices architecture.
@@ -31,7 +30,7 @@ This project implements a food delivery application using microservices architec
 
 ## Architecture
 
-- **Microservices**:  
+- **Microservices**:
   - **User Service** – Handles user registration, login, and user management.
   - **Restaurant Service** – Manages restaurant details, menus, and related operations.
   - **Order Service** – Responsible for order placement, tracking, and management.
@@ -53,36 +52,36 @@ This project implements a food delivery application using microservices architec
 
 ## Project Structure
 
+```
 food-delivery-app/
 ├── backend/
-│ ├── user-service/
-│ ├── restaurant-service/
-│ ├── order-service/
-│ └── delivery-service/
+│   ├── user-service/
+│   ├── restaurant-service/
+│   ├── order-service/
+│   └── delivery-service/
 ├── frontend-aggregator/
-│ └── (EJS-based aggregator files)
+│   └── (EJS-based aggregator files)
 ├── k8s/
-│ ├── namespace.yaml
-│ ├── user-service-deployment.yaml
-│ ├── user-service-service.yaml
-│ ├── restaurant-service-deployment.yaml
-│ ├── restaurant-service-service.yaml
-│ ├── order-service-deployment.yaml
-│ ├── order-service-service.yaml
-│ ├── delivery-service-deployment.yaml
-│ ├── delivery-service-service.yaml
-│ ├── user-db-deployment.yaml
-│ ├── user-db-service.yaml
-│ ├── restaurant-db-deployment.yaml
-│ ├── restaurant-db-service.yaml
-│ ├── order-db-deployment.yaml
-│ ├── order-db-service.yaml
-│ ├── delivery-db-deployment.yaml
-│ └── delivery-db-service.yaml
+│   ├── namespace.yaml
+│   ├── user-service-deployment.yaml
+│   ├── user-service-service.yaml
+│   ├── restaurant-service-deployment.yaml
+│   ├── restaurant-service-service.yaml
+│   ├── order-service-deployment.yaml
+│   ├── order-service-service.yaml
+│   ├── delivery-service-deployment.yaml
+│   ├── delivery-service-service.yaml
+│   ├── user-db-deployment.yaml
+│   ├── user-db-service.yaml
+│   ├── restaurant-db-deployment.yaml
+│   ├── restaurant-db-service.yaml
+│   ├── order-db-deployment.yaml
+│   ├── order-db-service.yaml
+│   ├── delivery-db-deployment.yaml
+│   └── delivery-db-service.yaml
 ├── docker-compose.yml
 └── README.md
-
-text
+```
 
 ---
 
@@ -101,113 +100,136 @@ text
 
 For running the entire stack locally using Docker Compose, use the provided `docker-compose.yml` file. This is useful for development and quick testing.
 
+```bash
 docker-compose up --build
-
-text
+```
 
 ### Kubernetes Deployment
 
 1. **Start your Kubernetes Cluster**  
    For example, using Minikube:
-minikube start --driver=docker
 
-text
+   ```bash
+   minikube start --driver=docker
+   ```
 
 2. **Set Up the Namespace**  
-Apply the namespace manifest:
-kubectl apply -f k8s/namespace.yaml
+   Apply the namespace manifest:
 
-text
+   ```bash
+   kubectl apply -f k8s/namespace.yaml
+   ```
 
 3. **Deploy Microservice Databases**  
-Apply the YAML files for each database:
-kubectl apply -f k8s/user-db-deployment.yaml
-kubectl apply -f k8s/user-db-service.yaml
-kubectl apply -f k8s/restaurant-db-deployment.yaml
-kubectl apply -f k8s/restaurant-db-service.yaml
-kubectl apply -f k8s/order-db-deployment.yaml
-kubectl apply -f k8s/order-db-service.yaml
-kubectl apply -f k8s/delivery-db-deployment.yaml
-kubectl apply -f k8s/delivery-db-service.yaml
+   Apply the YAML files for each database:
 
-text
+   ```bash
+   kubectl apply -f k8s/user-db-deployment.yaml
+   kubectl apply -f k8s/user-db-service.yaml
+   kubectl apply -f k8s/restaurant-db-deployment.yaml
+   kubectl apply -f k8s/restaurant-db-service.yaml
+   kubectl apply -f k8s/order-db-deployment.yaml
+   kubectl apply -f k8s/order-db-service.yaml
+   kubectl apply -f k8s/delivery-db-deployment.yaml
+   kubectl apply -f k8s/delivery-db-service.yaml
+   ```
 
 4. **Deploy Microservices**  
-Then, deploy each microservice:
-kubectl apply -f k8s/user-service-deployment.yaml
-kubectl apply -f k8s/user-service-service.yaml
-kubectl apply -f k8s/restaurant-service-deployment.yaml
-kubectl apply -f k8s/restaurant-service-service.yaml
-kubectl apply -f k8s/order-service-deployment.yaml
-kubectl apply -f k8s/order-service-service.yaml
-kubectl apply -f k8s/delivery-service-deployment.yaml
-kubectl apply -f k8s/delivery-service-service.yaml
+   Then, deploy each microservice:
 
-text
+   ```bash
+   kubectl apply -f k8s/user-service-deployment.yaml
+   kubectl apply -f k8s/user-service-service.yaml
+   kubectl apply -f k8s/restaurant-service-deployment.yaml
+   kubectl apply -f k8s/restaurant-service-service.yaml
+   kubectl apply -f k8s/order-service-deployment.yaml
+   kubectl apply -f k8s/order-service-service.yaml
+   kubectl apply -f k8s/delivery-service-deployment.yaml
+   kubectl apply -f k8s/delivery-service-service.yaml
+   ```
 
 5. **Verify Deployments**  
-Check that all pods are running:
-kubectl get pods -n fooddelivery
-kubectl get deployments -n fooddelivery
+   Check that all pods are running:
 
-text
+   ```bash
+   kubectl get pods -n fooddelivery
+   kubectl get deployments -n fooddelivery
+   ```
 
 6. **Test Endpoints**  
-Use port-forwarding for local testing:
-kubectl port-forward svc/user-service 3001:3001 -n fooddelivery
+   Use port-forwarding for local testing:
 
-Then test via curl:
-curl http://localhost:3001/health
+   ```bash
+   kubectl port-forward svc/user-service 3001:3001 -n fooddelivery
+   ```
 
-text
+   Then test via curl:
+
+   ```bash
+   curl http://localhost:3001/health
+   ```
 
 ---
 
 ## Configuration
 
 - **Environment Variables**:  
-Each microservice expects a `MONGODB_URI` variable pointing to its respective in-cluster database service (e.g., `mongodb://user-db:27017/users` for the user service).  
+  Each microservice expects a `MONGODB_URI` variable pointing to its respective in-cluster database service (e.g., `mongodb://user-db:27017/users` for the user service).
+
 - **Init Containers**:  
-Optionally, init containers in the deployments wait for the databases to become available before starting the application containers.
+  Optionally, init containers in the deployments wait for the databases to become available before starting the application containers.
+
 - **Image Tagging**:  
-Docker images are tagged and pushed to Docker Hub (e.g., `nsvpavan/backend-user-service:latest`). Make sure your deployment YAMLs reference these images.
+  Docker images are tagged and pushed to Docker Hub (e.g., `nsvpavan/backend-user-service:latest`). Make sure your deployment YAMLs reference these images.
 
 ---
 
 ## Testing & Verification
 
 - **Verify Pod Status**:
-kubectl get pods -n fooddelivery
 
-text
+  ```bash
+  kubectl get pods -n fooddelivery
+  ```
+
 - **Check Logs for Issues**:
-kubectl logs <pod-name> -n fooddelivery
 
-text
+  ```bash
+  kubectl logs <pod-name> -n fooddelivery
+  ```
+
 - **Service Connectivity**:  
-Use a temporary pod (via busybox) to test service DNS resolution:
-kubectl run -it --rm --restart=Never busybox --image=busybox -n fooddelivery -- sh
+  Use a temporary pod (via busybox) to test service DNS resolution:
 
-Inside the pod:
-wget -qO- http://user-db:27017
+  ```bash
+  kubectl run -it --rm --restart=Never busybox --image=busybox -n fooddelivery -- sh
+  ```
 
-text
-- **API Testing**:
-Use curl or Postman to test the exposed endpoints as necessary.
+  Inside the pod:
+
+  ```bash
+  wget -qO- http://user-db:27017
+  ```
+
+- **API Testing**:  
+  Use curl or Postman to test the exposed endpoints as necessary.
 
 ---
 
 ## Troubleshooting
 
 - **Database Connection Timeouts**:  
-Ensure that the environment variables in the deployments point to the correct service names (e.g., `user-db` and not `user_db`).
-- **Deployment Updates**:  
-If changes are not reflected, use `kubectl edit` or `kubectl patch` commands to ensure the correct environment variables are in place.
-- **Pod Logs**:  
-Check logs for errors or connection issues:
-kubectl logs <pod-name> -n fooddelivery
+  Ensure that the environment variables in the deployments point to the correct service names (e.g., `user-db` and not `user_db`).
 
-text
+- **Deployment Updates**:  
+  If changes are not reflected, use `kubectl edit` or `kubectl patch` commands to ensure the correct environment variables are in place.
+
+- **Pod Logs**:  
+  Check logs for errors or connection issues:
+
+  ```bash
+  kubectl logs <pod-name> -n fooddelivery
+  ```
 
 ---
 

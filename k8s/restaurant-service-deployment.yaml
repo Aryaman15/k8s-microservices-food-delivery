@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: restaurant-service
+  namespace: fooddelivery
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: restaurant-service
+  template:
+    metadata:
+      labels:
+        app: restaurant-service
+    spec:
+      initContainers:
+        - name: wait-for-restaurant-db
+          image: busybox
+          command:
+            [
+              "sh",
+              "-c",
+              "until nc -z restaurant-db 27017; do echo waiting for restaurant-db; sleep 2; done;",
+            ]
+      containers:
+        - name: restaurant-service
+          image: nsvpavan/backend-restaurant-service:latest
+          ports:
+            - containerPort: 3002
+          env:
+            - name: MONGODB_URI
+              value: "mongodb://restaurant-db:27017/restaurants"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3002
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3002
+            initialDelaySeconds: 15
+            periodSeconds: 20

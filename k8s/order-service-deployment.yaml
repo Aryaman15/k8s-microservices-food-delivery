@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service
+  namespace: fooddelivery
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: order-service
+  template:
+    metadata:
+      labels:
+        app: order-service
+    spec:
+    initContainers:
+      - name: wait-for-order-db
+        image: busybox
+        command:
+          [
+            "sh",
+            "-c",
+            "until nc -z order-db 27017; do echo waiting for order-db; sleep 2; done;",
+          ]
+        containers:
+          - name: order-service
+            image: nsvpavan/backend-order-service:latest
+            ports:
+              - containerPort: 3003
+            env:
+              - name: MONGODB_URI
+                value: "mongodb://order-db:27017/orders"
+              - name: USER_SERVICE_URL
+                value: "http://user-service:3001"
+              - name: RESTAURANT_SERVICE_URL
+                value: "http://restaurant-service:3002"
+              - name: DELIVERY_SERVICE_URL
+                value: "http://delivery-service:3004"
+            readinessProbe:
+              httpGet:
+                path: /health
+                port: 3003
+              initialDelaySeconds: 5
+              periodSeconds: 10
+            livenessProbe:
+              httpGet:
+                path: /health
+                port: 3003
+              initialDelaySeconds: 15
+              periodSeconds: 20

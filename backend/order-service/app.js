@@ -2,21 +2,18 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const axios = require("axios");
+const dotenv = require("dotenv");
 
 const app = express();
 const PORT = process.env.PORT || 3003;
 
+const connectDB = require("./config/db.js");
+dotenv.config();
 // Middleware
 app.use(bodyParser.json());
 
 // MongoDB Connection
-mongoose
-  .connect(process.env.MONGODB_URI || "mongodb://order_db:27017/orders", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log("Connected to Order Database"))
-  .catch((err) => console.error("Database connection error:", err));
+connectDB();
 
 // Order Model
 const orderSchema = new mongoose.Schema({

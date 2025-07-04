@@ -11,7 +11,7 @@ const orderSchema = new mongoose.Schema({
       quantity: Number,
     },
   ],
-  totalPice: { type: Number, required: true },
+  totalPrice: { type: Number, required: true },
   status: {
     type: String,
     enum: ["PLACED", "CONFIRMED", "OUT_FOR_DELIVERY", "DELIVERED", "CANCELLED"],

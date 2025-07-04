@@ -1,5 +1,4 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const axios = require("axios");
 const dotenv = require("dotenv");
@@ -8,43 +7,13 @@ const app = express();
 const PORT = process.env.PORT || 3003;
 
 const connectDB = require("./config/db.js");
+
 dotenv.config();
 // Middleware
 app.use(bodyParser.json());
 
 // MongoDB Connection
 connectDB();
-
-// Order Model
-const orderSchema = new mongoose.Schema({
-  userId: { type: String, required: true },
-  restaurantId: { type: String, required: true },
-  items: [
-    {
-      menuItemId: String,
-      name: String,
-      price: Number,
-      quantity: Number,
-    },
-  ],
-  totalPrice: { type: Number, required: true },
-  status: {
-    type: String,
-    enum: [
-      "PLACED",
-      "CONFIRMED",
-      "PREPARING",
-      "OUT_FOR_DELIVERY",
-      "DELIVERED",
-      "CANCELLED",
-    ],
-    default: "PLACED",
-  },
-  deliveryAddress: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now },
-});
-
-const Order = mongoose.model("Order", orderSchema);
 
 // Service endpoints
 const USER_SERVICE_URL =

@@ -2,14 +2,15 @@ const express = require("express");
 const router = express.Router();
 const orderController = require("../controllers/orderController");
 const wrapAsync = require("../utils/wrapAsync");
+const authMiddleware = require("../middlewares/authMiddleware");
 
 router
   .route("/orders")
   .get(wrapAsync(orderController.allOrders))
-  .post(wrapAsync(orderController.newOrder));
+  .post(authMiddleware.protect, wrapAsync(orderController.newOrder));
 router
   .route("/orders/:id/status")
-  .get(wrapAsync(orderController.getOrderStatus));
-//.patch(wrapAsync(orderController.updateOrderStatus));
+  .get(authMiddleware.protect, wrapAsync(orderController.getOrderStatus))
+  .patch(authMiddleware.protect, wrapAsync(orderController.updateOrderStatus));
 
 module.exports = router;

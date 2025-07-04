@@ -1,8 +1,9 @@
 const Order = require("../models/order");
+const axios = require("axios");
+const getTotalPrice = require("../utils/getTotalPrice");
 
 // Get all orders
 //"/orders"
-
 module.exports.allOrders = async (req, res) => {
   try {
     const orders = await Order.find();
@@ -35,35 +36,19 @@ module.exports.showUserOrders = async (req, res) => {
   }
 };
 
-// Create order with service communication
+//create new order
 //"/orders"
 module.exports.newOrder = async (req, res) => {
   try {
-    const { userId, restaurantId, items, deliveryAddress } = req.body;
+    const { restaurantId, items, deliveryAddress } = req.body;
+    const userId = req.user.id;
 
-    // Check if user exists
-    // try {
-    //   await axios.get(`${USER_SERVICE_URL}/users/${userId}`);
-    // } catch (error) {
-    //   return res.status(404).json({ error: "User not found" });
-    // }
-
-    // Check if restaurant exists and verify menu items
-    // let restaurant;
-    // try {
-    //   const response = await axios.get(
-    //     `${RESTAURANT_SERVICE_URL}/restaurants/${restaurantId}`
-    //   );
-    //   restaurant = response.data;
-    // } catch (error) {
-    //   return res.status(404).json({ error: "Restaurant not found" });
-    // }
-
-    // Calculate total price (in a real app, would validate against restaurant prices)
-    const totalPrice = items.reduce(
-      (sum, item) => sum + item.price * item.quantity,
-      0
+    // Fetch menu & calculate total
+    const { data: restaurantMenu } = await axios.get(
+      `${process.env.RESTAURANT_SERVICE_URL}/restaurants/${restaurantId}/menu`
     );
+
+    let totalPrice = getTotalPrice(restaurantMenu, items);
 
     // Create order
     const newOrder = new Order({
@@ -77,20 +62,24 @@ module.exports.newOrder = async (req, res) => {
 
     await newOrder.save();
 
-    // Notify delivery service about new order (async)
-    // try {
-    //   await axios.post(`${DELIVERY_SERVICE_URL}/deliveries`, {
-    //     orderId: newOrder._id,
-    //     restaurantId,
-    //     deliveryAddress,
-    //   });
-    // } catch (error) {
-    //   console.error("Failed to notify delivery service:", error.message);
-    //   // We continue anyway, as this shouldn't block order creation
-    // }
+    // Notify delivery service
+    if (process.env.DELIVERY_SERVICE_URL) {
+      try {
+        await axios.post(`${process.env.DELIVERY_SERVICE_URL}/deliveries`, {
+          orderId: newOrder._id,
+          userId,
+          restaurantId,
+          deliveryAddress,
+        });
+      } catch (err) {
+        console.error("Delivery service notification failed:", err.message);
+        // we still return success, but might log to monitoring system
+      }
+    }
 
     res.status(201).json(newOrder);
   } catch (err) {
+    console.error(err);
     res.status(400).json({ error: err.message });
   }
 };

@@ -6,7 +6,7 @@ const authMiddleware = require("../middlewares/authMiddleware");
 
 router
   .route("/orders")
-  .get(wrapAsync(orderController.allOrders))
+  .get(/*authMiddleware.isAdmin,*/ wrapAsync(orderController.allOrders))
   .post(authMiddleware.protect, wrapAsync(orderController.newOrder));
 router
   .route("/orders/:id/status")

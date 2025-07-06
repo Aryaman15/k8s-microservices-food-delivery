@@ -1,4 +1,4 @@
-const { Delivery } = require("../models/delivery");
+const { Delivery, DeliveryAgent } = require("../models/delivery");
 
 // Get all deliveries
 // /deliveries

@@ -2,7 +2,7 @@ const { DeliveryAgent } = require("../models/delivery.js");
 
 // Create delivery agent
 // /agents
-module.exports.allAgents = async (req, res) => {
+module.exports.newAgent = async (req, res) => {
   try {
     const agent = new DeliveryAgent(req.body);
     await agent.save();
@@ -14,7 +14,7 @@ module.exports.allAgents = async (req, res) => {
 
 // Get all delivery agents
 // /agents
-module.exports.newAgent = async (req, res) => {
+module.exports.allAgents = async (req, res) => {
   try {
     const agents = await DeliveryAgent.find();
     res.json(agents);

@@ -9,6 +9,7 @@ const PORT = process.env.PORT || 3003;
 const connectDB = require("./config/db.js");
 const orderRoutes = require("./routes/orderRoutes.js");
 const healthRoutes = require("./routes/healthRoute.js");
+const ExpressError = require("./utils/ExpressError.js");
 
 dotenv.config();
 // Middleware
@@ -32,4 +33,23 @@ app.use("/", orderRoutes);
 
 app.listen(PORT, () => {
   console.log(`Order service running on port ${PORT}`);
+});
+
+// Error Handling
+
+// Handle non-existent routes (404)
+app.all("*", (req, res, next) => {
+  return next(new ExpressError(404, "Page Not Found!"));
+});
+
+// Error Handling Middleware
+app.use((err, req, res, next) => {
+  let { statusCode = 500, message = "Something went wrong!" } = err;
+  res.status(statusCode).json({
+    success: false,
+    error: {
+      message,
+      statusCode,
+    },
+  });
 });

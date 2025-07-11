@@ -1,5 +1,11 @@
 # Food Delivery Microservices on Kubernetes
 
+##  🚧 Project Status
+
+The project is currently being upgraded. Some parts may not work as described here. Please check back for updates.
+
+---
+
 This repository demonstrates a fully functional microservices-based food delivery application built using Node.js, Express, and MongoDB. The services are containerized using Docker and orchestrated with Kubernetes. The project comprises several independent microservices along with a frontend aggregator for unified access, providing a realistic example of a production–grade microservices architecture.
 
 ---

@@ -6,6 +6,11 @@ const RestaurantCard = ({ r }) => (
     to={`/restaurants/${r._id}`}
     className="block bg-white rounded-xl shadow p-4 hover:shadow-lg transition"
   >
+    <img
+      src={r.image}
+      alt={r.name}
+      className="h-36 w-full object-cover rounded-xl"
+    />
     <h3 className="text-lg font-semibold mb-1 flex items-center gap-1">
       {r.name}
       <span className="flex items-center text-yellow-500 ml-auto text-sm font-medium">

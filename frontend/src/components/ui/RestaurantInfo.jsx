@@ -28,8 +28,9 @@ const RestaurantInfo = ({ data }) => {
       {/* Map placeholder (you can replace with actual embed later) */}
       <div>
         <p className="text-sm text-gray-500 mb-1">Location:</p>
+        <p>{data.address}</p>
         <img
-          src="https://maps.gstatic.com/tactile/omnibox/restaurant-2x.png"
+          src="https://developers.google.com/static/maps/images/landing/hero_maps_static_api_480.png"
           alt="map"
           className="w-full h-40 object-cover rounded-xl"
         />

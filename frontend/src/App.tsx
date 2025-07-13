@@ -1,10 +1,16 @@
-import { Button } from "@/components/ui/button";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import RestaurantsPage from "./pages/RestaurantsPage";
+import RestaurantPage from "./pages/RestaurantPage";
 
 function App() {
   return (
-    <div className="flex min-h-svh flex-col items-center justify-center">
-      <Button className="bg-destructive hover:bg-amber-200">Click me</Button>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/"            element={<RestaurantsPage />} />
+        <Route path="/restaurants" element={<RestaurantsPage />} />
+        <Route path="/restaurants/:id" element={<RestaurantPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

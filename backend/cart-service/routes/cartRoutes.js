@@ -1,25 +1,39 @@
 const { protect } = require("../middlewares/authMiddleware");
-
 const express = require("express");
 const router = express.Router();
 const {
-  createCart,
   getCartsByUser,
-  //updateCart,
+  getCartForRestaurant,
   addItemToCart,
+  getCartItems,
   updateCartItem,
   deleteCartItem,
-  getCartItems,
+  updateCart,
 } = require("../controllers/cartController");
 
-router.post("/", protect, createCart);
+// List all carts for a user
 router.get("/user/:userId", protect, getCartsByUser);
-// router.patch("/:cartId", updateCart);
 
-// Nested item routes
-router.post("/:cartId/items", protect, addItemToCart);
+// Get (or 404) the single cart for a user+restaurant
+router.get(
+  "/user/:userId/restaurant/:restaurantId",
+  protect,
+  getCartForRestaurant
+);
+
+// Add an item (server will create the one-or-none cart behind-the-scenes)
+router.post("/items", protect, addItemToCart);
+
+// Get items within a cart
 router.get("/:cartId/items", protect, getCartItems);
+
+// Update item quantity
 router.put("/items/:itemId", protect, updateCartItem);
+
+// Delete item (also deletes cart if last)
 router.delete("/items/:itemId", protect, deleteCartItem);
+
+// Patch cart (e.g. status)
+router.patch("/:cartId", protect, updateCart);
 
 module.exports = router;

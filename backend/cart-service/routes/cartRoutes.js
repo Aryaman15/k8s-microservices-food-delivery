@@ -1,22 +1,25 @@
+const { protect } = require("../middlewares/authMiddleware");
+
 const express = require("express");
 const router = express.Router();
 const {
   createCart,
-  getCartByUser,
-  updateCartStatus,
+  getCartsByUser,
+  //updateCart,
   addItemToCart,
   updateCartItem,
   deleteCartItem,
-  getCartItems
+  getCartItems,
 } = require("../controllers/cartController");
 
-router.post("/", createCart);
-router.get("/user/:userId", getCartByUser);
-router.patch("/:cartId/status", updateCartStatus);
+router.post("/", protect, createCart);
+router.get("/user/:userId", protect, getCartsByUser);
+// router.patch("/:cartId", updateCart);
 
-router.post("/items", addItemToCart);
-router.get("/items/:cartId", getCartItems);
-router.put("/items/:itemId", updateCartItem);
-router.delete("/items/:itemId", deleteCartItem);
+// Nested item routes
+router.post("/:cartId/items", protect, addItemToCart);
+router.get("/:cartId/items", protect, getCartItems);
+router.put("/items/:itemId", protect, updateCartItem);
+router.delete("/items/:itemId", protect, deleteCartItem);
 
 module.exports = router;

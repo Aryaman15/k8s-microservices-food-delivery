@@ -10,9 +10,13 @@ const createCart = async (req, res) => {
   }
 };
 
-const getCartByUser = async (req, res) => {
+const getCartsByUser = async (req, res) => {
   try {
-    const cart = await Cart.findOne({ userId: req.params.userId, status: "ACTIVE" });
+    const cart = await Cart.find({
+      userId: req.params.userId,
+      status: "ACTIVE",
+    });
+    console.log(cart);
     res.json(cart);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -21,7 +25,11 @@ const getCartByUser = async (req, res) => {
 
 const updateCartStatus = async (req, res) => {
   try {
-    const cart = await Cart.findByIdAndUpdate(req.params.cartId, { status: req.body.status }, { new: true });
+    const cart = await Cart.findByIdAndUpdate(
+      req.params.cartId,
+      { status: req.body.status },
+      { new: true }
+    );
     res.json(cart);
   } catch (err) {
     res.status(400).json({ error: err.message });
@@ -39,7 +47,9 @@ const addItemToCart = async (req, res) => {
 
 const updateCartItem = async (req, res) => {
   try {
-    const item = await CartItem.findByIdAndUpdate(req.params.itemId, req.body, { new: true });
+    const item = await CartItem.findByIdAndUpdate(req.params.itemId, req.body, {
+      new: true,
+    });
     res.json(item);
   } catch (err) {
     res.status(400).json({ error: err.message });
@@ -66,10 +76,10 @@ const getCartItems = async (req, res) => {
 
 module.exports = {
   createCart,
-  getCartByUser,
+  getCartsByUser,
   updateCartStatus,
   addItemToCart,
   updateCartItem,
   deleteCartItem,
-  getCartItems
+  getCartItems,
 };

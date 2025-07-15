@@ -1,82 +1,74 @@
 import axios from "axios";
-
-const BASE_URL = import.meta.env.VITE_CART_URL + "/api/carts";
-
-// Get token from localStorage helper
-const getAuthHeader = () => {
-  const token = localStorage.getItem("token");
-  //console.log(token);
-  return token ? { authorization: `Bearer ${token}` } : {};
+const BASE = import.meta.env.VITE_CART_URL + "/api/carts";
+const authHdr = () => {
+  const t = localStorage.getItem("token");
+  return t ? { authorization: `Bearer ${t}` } : {};
 };
 
-// Fetch all carts for a user
-export const fetchCartsByUser = (userId) => {
-  if (!userId) return Promise.reject(new Error("Not authenticated"));
-  return axios.get(`${BASE_URL}/user/${userId}`, {
-    headers: getAuthHeader(),
+// Fetch all carts (one per restaurant)
+export const fetchCartsByUser = (userId) =>
+  axios.get(`${BASE}/user/${userId}`, { headers: authHdr() }).then((r) => {
+    console.log("service: ");
+    console.log(r.data);
+    return r.data;
   });
-};
 
-// Fetch all items in a specific cart
-export const fetchCartItems = (cartId) => {
-  if (!cartId) return Promise.reject(new Error("Cart ID is required"));
-  return axios.get(`${BASE_URL}/${cartId}/items`, {
-    headers: getAuthHeader(),
-  });
-};
+// Fetch the single cart for this restaurant
+export const fetchCartForRestaurant = (userId, restaurantId) =>
+  axios
+    .get(`${BASE}/user/${userId}/restaurant/${restaurantId}`, {
+      headers: authHdr(),
+    })
+    .then((r) => r.data);
 
-// Add item to cart (creating cart if needed)
-export const addToCart = async (userId, restaurantId, item) => {
+// Add an item (backend auto-creates the 0→1 cart)
+export const addToCart = async (
+  userId,
+  restaurantId,
+  menuItemId,
+  name,
+  price,
+  qty = 1
+) => {
   if (!userId) throw new Error("Not authenticated");
-  let cart;
-
-  try {
-    const cartRes = await axios.get(`${BASE_URL}/user/${userId}`, {
-      headers: getAuthHeader(),
-    });
-    cart = cartRes.data;
-
-    if (!cart || cart.restaurantId !== restaurantId) {
-      const newCartRes = await axios.post(
-        BASE_URL,
-        { userId, restaurantId },
-        {
-          headers: getAuthHeader(),
-        }
-      );
-      cart = newCartRes.data;
-    }
-  } catch (err) {
-    if (err.response?.status === 404) {
-      const newCartRes = await axios.post(
-        BASE_URL,
-        { userId, restaurantId },
-        {
-          headers: getAuthHeader(),
-        }
-      );
-      cart = newCartRes.data;
-    } else {
-      throw err;
-    }
-  }
-
-  // Add item to that cart
-  const addItemRes = await axios.post(
-    `${BASE_URL}/${cart._id}/items`,
-    {
-      cartId: cart._id,
-      name: item.name,
-      price: item.price,
-      quantity: 1,
-    },
-    {
-      headers: getAuthHeader(),
-    }
+  console.log(
+    userId +
+      " " +
+      restaurantId +
+      " " +
+      menuItemId +
+      " " +
+      name +
+      " " +
+      price +
+      " " +
+      qty
   );
-
-  return {
-    cart,
-    newItem: addItemRes.data,
-  };
+  const { data } = await axios.post(
+    `${BASE}/items`,
+    { userId, restaurantId, menuItemId, name, price, quantity: qty },
+    { headers: authHdr() }
+  );
+  return data; // { cart, item }
 };
+
+// …and the other calls stay the same
+export const fetchCartItems = (cartId) =>
+  axios
+    .get(`${BASE}/${cartId}/items`, { headers: authHdr() })
+    .then((r) => r.data);
+
+export const updateCartItem = (itemId, qty) =>
+  axios
+    .put(`${BASE}/items/${itemId}`, { quantity: qty }, { headers: authHdr() })
+    .then((r) => r.data);
+
+export const deleteCartItem = (itemId) =>
+  axios
+    .delete(`${BASE}/items/${itemId}`, { headers: authHdr() })
+    .then((r) => r.data);
+
+export const updateCart = (cartId, patch) =>
+  axios
+    .patch(`${BASE}/${cartId}`, patch, { headers: authHdr() })
+    .then((r) => r.data);

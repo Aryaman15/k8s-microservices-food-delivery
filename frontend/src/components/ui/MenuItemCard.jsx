@@ -1,4 +1,3 @@
-// src/components/ui/MenuItemCard.jsx
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
@@ -15,7 +14,16 @@ const MenuItemCard = ({ item, restaurantId }) => {
     }
 
     try {
-      await addToCart(user._id, restaurantId, item);
+      // MenuItemCard.jsx
+      await addToCart(
+        user._id,
+        restaurantId,
+        item._id,
+        item.name,
+        item.price,
+        1
+      );
+
       alert("Added to cart!");
     } catch (err) {
       console.error(err);

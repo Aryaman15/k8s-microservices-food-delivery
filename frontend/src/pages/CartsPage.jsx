@@ -1,14 +1,26 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { fetchCartsByUser } from "../services/cartService";
+import { fetchCartsByUser, fetchCartItems } from "../services/cartService";
 
 const CartsPage = () => {
   const [carts, setCarts] = useState([]);
   const userId = localStorage.getItem("userId");
 
   useEffect(() => {
-    fetchCartsByUser(userId).then((res) => setCarts(res.data));
-  }, []);
+    // 1️⃣ Load carts
+    fetchCartsByUser(userId)
+      .then((carts) => {
+        // 2️⃣ For each cart, load items and attach count
+        return Promise.all(
+          carts.map(async (cart) => {
+            const items = await fetchCartItems(cart._id);
+            return { ...cart, itemCount: items.length };
+          })
+        );
+      })
+      .then((cartsWithCounts) => setCarts(cartsWithCounts))
+      .catch(console.error);
+  }, [userId]);
 
   return (
     <div className="p-8">
@@ -20,11 +32,13 @@ const CartsPage = () => {
             to={`/carts/${cart._id}`}
             className="p-4 border rounded hover:bg-gray-100"
           >
-            Cart for {cart.restaurantId} - {cart.items.length} items
+            Cart for {cart.restaurantId} — {cart.itemCount} item
+            {cart.itemCount !== 1 && "s"}
           </Link>
         ))}
       </div>
     </div>
   );
 };
+
 export default CartsPage;

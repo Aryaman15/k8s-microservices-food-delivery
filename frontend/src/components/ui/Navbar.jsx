@@ -23,7 +23,10 @@ const Navbar = () => {
         </Link>
 
         <ul className="hidden md:flex gap-8 text-sm">
-          <li className="hover:underline cursor-pointer">Home</li>
+          <Link to="/">
+            <li className="hover:underline cursor-pointer">Home</li>
+          </Link>
+
           <li className="hover:underline cursor-pointer">Menu</li>
           <li className="hover:underline cursor-pointer">Contact</li>
         </ul>

@@ -11,11 +11,11 @@ const RestaurantsPage = () => {
   useEffect(() => {
     fetchRestaurants()
       .then((res) => {
-        console.log(
-          "Restaurant API Base URL:",
-          import.meta.env.VITE_RESTAURANT_URL
-        );
-        console.log(res.data);
+        // console.log(
+        //   "Restaurant API Base URL:",
+        //   import.meta.env.VITE_RESTAURANT_URL
+        // );
+        //console.log(res.data);
         setRestaurants(res.data);
       })
       .catch(console.error)

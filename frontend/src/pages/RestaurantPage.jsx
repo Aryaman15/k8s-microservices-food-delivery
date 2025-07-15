@@ -37,7 +37,7 @@ const RestaurantPage = () => {
           {/* Menu */}
           <div className="lg:col-span-2 grid md:grid-cols-2 gap-6">
             {menu.map((item, idx) => (
-              <MenuItemCard key={idx} item={item} />
+              <MenuItemCard key={idx} item={item} restaurantId={id} />
             ))}
             {menu.length === 0 && (
               <p className="text-gray-500 col-span-full">Menu not available.</p>

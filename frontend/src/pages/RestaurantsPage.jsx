@@ -24,7 +24,7 @@ const RestaurantsPage = () => {
 
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
       <main className="max-w-7xl mx-auto px-4 py-10">
         <h2 className="text-2xl font-semibold mb-6">Restaurants</h2>
 
@@ -36,7 +36,7 @@ const RestaurantsPage = () => {
           ))}
         </div>
       </main>
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 };

@@ -1,6 +1,6 @@
 # Food Delivery Microservices on Kubernetes
 
-##  🚧 Project Status
+## 🚧 Project Status
 
 The project is currently being upgraded. Some parts may not work as described here. Please check back for updates.
 
@@ -181,6 +181,14 @@ docker-compose up --build
 
 - **Environment Variables**:  
   Each microservice expects a `MONGODB_URI` variable pointing to its respective in-cluster database service (e.g., `mongodb://user-db:27017/users` for the user service).
+
+  Frontend directory until this commit expects VITE_RESTAURANT_URL, VITE_CART_URL, VITE_AUTH_URL.
+
+  Cart service expects: MONGO_URI,PORT,JWT_SECRET(same as user service)
+
+  Restaurant service expects: MONGO_URI,PORT
+
+  User service expects: MONGO_URI,PORT,JWT_SECRET
 
 - **Init Containers**:  
   Optionally, init containers in the deployments wait for the databases to become available before starting the application containers.

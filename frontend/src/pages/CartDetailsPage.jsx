@@ -6,6 +6,7 @@ import { fetchCartItems } from "../services/cartService";
 const CartDetailsPage = () => {
   const { id } = useParams();
   const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -13,26 +14,67 @@ const CartDetailsPage = () => {
       .then((data) => setItems(data))
       .catch((err) => {
         console.error(err);
-        // if cart not found or auth failure, redirect to carts page
         navigate("/carts");
-      });
+      })
+      .finally(() => setLoading(false));
   }, [id, navigate]);
 
+  const total = items.reduce(
+    (sum, item) =>
+      sum +
+      (typeof item.price === "number" ? item.price : 0) *
+        (typeof item.quantity === "number" ? item.quantity : 1),
+    0
+  );
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <span className="text-gray-500 text-lg">Loading cart...</span>
+      </div>
+    );
+  }
+
   return (
-    <div className="p-8">
-      <h2 className="text-xl font-semibold mb-4">Cart Items</h2>
-      <ul>
-        {items.map((item) => {
-          // Safely default price to 0 if missing
-          const price = typeof item.price === "number" ? item.price : 0;
-          return (
-            <li key={item._id}>
-              {item.name} x {item.quantity} — ${price.toFixed(2)}
-            </li>
-          );
-        })}
-      </ul>
-      <button className="mt-6 px-4 py-2 bg-green-600 text-white rounded">
+    <div className="max-w-xl mx-auto p-8 bg-white rounded-lg shadow-md mt-8">
+      <h2 className="text-2xl font-bold mb-6 text-gray-800">Your Cart</h2>
+      {items.length === 0 ? (
+        <div className="text-gray-500 text-center py-12">
+          Your cart is empty.
+        </div>
+      ) : (
+        <ul className="divide-y divide-gray-200 mb-6">
+          {items.map((item) => {
+            const price = typeof item.price === "number" ? item.price : 0;
+            return (
+              <li
+                key={item._id}
+                className="py-4 flex items-center justify-between"
+              >
+                <div>
+                  <span className="font-medium text-gray-700">{item.name}</span>
+                  <span className="ml-2 text-gray-500 text-sm">
+                    x {item.quantity}
+                  </span>
+                </div>
+                <span className="font-semibold text-gray-800">
+                  ${(price * item.quantity).toFixed(2)}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+      <div className="flex items-center justify-between border-t pt-4">
+        <span className="font-semibold text-lg text-gray-700">Total</span>
+        <span className="font-bold text-lg text-green-600">
+          ${total.toFixed(2)}
+        </span>
+      </div>
+      <button
+        className="w-full mt-8 px-4 py-3 bg-green-600 hover:bg-green-700 transition text-white rounded-lg font-semibold text-lg disabled:opacity-50"
+        disabled={items.length === 0}
+      >
         Proceed to Payment
       </button>
     </div>

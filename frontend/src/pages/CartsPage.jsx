@@ -33,7 +33,6 @@ export default function CartsPage() {
           carts.map(async (cart) => {
             const items = await fetchCartItems(cart._id);
             const restaurant = (await fetchRestaurant(cart.restaurantId)).data;
-            //console.log(restaurantName);
             return { ...cart, itemCount: items.length, restaurant };
           })
         )
@@ -83,7 +82,12 @@ export default function CartsPage() {
                 {cart.itemCount === 1 ? "item" : "items"} in this cart.
               </CardContent>
               <CardFooter>
-                <Button asChild variant="secondary" size="sm">
+                <Button
+                  asChild
+                  variant="primary"
+                  className="bg-blue-600 text-white"
+                  size="sm"
+                >
                   <Link to={`/carts/${cart._id}`}>View Cart</Link>
                 </Button>
               </CardFooter>

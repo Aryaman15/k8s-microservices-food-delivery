@@ -27,11 +27,8 @@ router.post("/items", protect, addItemToCart);
 // Get items within a cart
 router.get("/:cartId/items", protect, getCartItems);
 
-// Update item quantity
-router.put("/items/:itemId", protect, updateCartItem);
-
-// Delete item (also deletes cart if last)
-router.delete("/items/:itemId", protect, deleteCartItem);
+router.put("/:cartId/items/:menuItemId", protect, updateCartItem);
+router.delete("/:cartId/items/:menuItemId", protect, deleteCartItem);
 
 // Patch cart (e.g. status)
 router.patch("/:cartId", protect, updateCart);

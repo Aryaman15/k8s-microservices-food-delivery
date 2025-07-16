@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Navbar from "../components/ui/Navbar";
 import Footer from "../components/ui/Footer";
-import MenuItemCard from "../components/ui/MenuItemCard";
+import MenuItemCard from "../components/ui/MenuItemCard.jsx";
 import RestaurantInfo from "../components/ui/RestaurantInfo";
 import { fetchRestaurant, fetchMenu } from "../services/restaurantService";
 

@@ -1,34 +1,46 @@
+// src/contexts/AuthContext.js
 import { createContext, useState, useEffect } from "react";
 
-// 1️⃣ Create the context
-export const AuthContext = createContext();
+export const AuthContext = createContext({
+  user: null,
+  token: null,
+  loading: true,
+  login: () => {},
+  logout: () => {},
+});
 
-// 2️⃣ Create a provider component
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // On mount, load user from localStorage
   useEffect(() => {
+    // hydrate from localStorage
     const storedUser = localStorage.getItem("user");
-    if (storedUser) setUser(JSON.parse(storedUser));
+    const storedToken = localStorage.getItem("token");
+    if (storedUser && storedToken) {
+      setUser(JSON.parse(storedUser));
+      setToken(storedToken);
+    }
+    setLoading(false);
   }, []);
 
-  // Login helper: save to state + localStorage
   const login = (userData, token) => {
     localStorage.setItem("user", JSON.stringify(userData));
     localStorage.setItem("token", token);
     setUser(userData);
+    setToken(token);
   };
 
-  // Logout helper: clear storage + state
   const logout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
     setUser(null);
+    setToken(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, token, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

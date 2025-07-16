@@ -1,20 +1,24 @@
-import { useContext, useEffect } from "react";
+// src/components/ProtectedRoute.jsx
+import { useContext } from "react";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
-import { useNavigate, Outlet } from "react-router-dom";
 
 const ProtectedRoute = () => {
-  const { user } = useContext(AuthContext);
-  const navigate = useNavigate();
+  const { user, loading } = useContext(AuthContext);
+  const location = useLocation();
 
-  useEffect(() => {
-    if (!user) {
-      alert("Please log in or sign up to continue."); // simple flash
-      navigate("/login", { replace: true });
-    }
-  }, [user, navigate]);
+  if (loading) {
+    // still hydrating from localStorage
+    return <div className="p-8 text-center">Loading…</div>;
+  }
 
-  // If user is logged in, render the child route(s)
-  return user ? <Outlet /> : null;
+  if (!user) {
+    // not logged in → send to login
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  // logged in → render nested routes
+  return <Outlet />;
 };
 
 export default ProtectedRoute;

@@ -1,13 +1,15 @@
+// src/App.jsx
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import RestaurantPage from "./pages/RestaurantPage";
-import RestaurantsPage from "./pages/RestaurantsPage";
 import Navbar from "./components/ui/Navbar";
 import Footer from "./components/ui/Footer";
+import ProtectedRoute from "./components/ProtectedRoute";
+
+import RestaurantsPage from "./pages/RestaurantsPage";
+import RestaurantPage from "./pages/RestaurantPage";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import CartsPage from "./pages/CartsPage";
 import CartDetailsPage from "./pages/CartDetailsPage";
-import ProtectedRoute from "./components/protectedRoute";
 import NotFound from "./pages/NotFound";
 
 function App() {
@@ -22,7 +24,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
 
-        {/* protected cart area */}
+        {/* protected */}
         <Route element={<ProtectedRoute />}>
           <Route path="/carts" element={<CartsPage />} />
           <Route path="/carts/:id" element={<CartDetailsPage />} />

@@ -1,58 +1,60 @@
+// src/components/ui/MenuItemCard.jsx
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { Card, CardContent, CardFooter } from "./card";
+import { CartCounter } from "./CartCounter";
 import { AuthContext } from "../../contexts/AuthContext";
-import { addToCart } from "../../services/cartService";
+import { useCartItem } from "../../hooks/useCartItem";
 
-const MenuItemCard = ({ item, restaurantId }) => {
+export default function MenuItemCard({ item, restaurantId }) {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const handleAddToCart = async () => {
+  // only pass the three args the hook expects
+  const { count, increment, decrement } = useCartItem(
+    user?._id || "",
+    restaurantId,
+    item._id,
+    item.name,
+    item.price
+  );
+
+  const handleAddClick = () => {
     if (!user) {
-      alert("Please log in or sign up to add items to your cart.");
-      return navigate("/login", { replace: true });
+      navigate("/login", { replace: true });
+      return;
     }
-
-    try {
-      // MenuItemCard.jsx
-      await addToCart(
-        user._id,
-        restaurantId,
-        item._id,
-        item.name,
-        item.price,
-        1
-      );
-
-      alert("Added to cart!");
-    } catch (err) {
-      console.error(err);
-      alert("Failed to add to cart");
-    }
+    increment();
   };
 
   return (
-    <div className="bg-white rounded-xl shadow p-4 flex flex-col gap-3">
+    <Card className="max-w-sm">
       <img
         src={item.image}
         alt={item.name}
-        className="h-36 w-full object-cover rounded-xl"
+        className="h-36 w-full object-cover rounded-t-lg"
       />
-
-      <div className="flex flex-col gap-1">
-        <h3 className="font-semibold">{item.name}</h3>
+      <CardContent className="flex flex-col gap-2">
+        <h3 className="text-lg font-semibold">{item.name}</h3>
         <p className="text-sm text-gray-600 line-clamp-2">{item.description}</p>
-        <p className="font-medium">${item.price.toFixed(2)}</p>
-      </div>
-
-      <button
-        onClick={handleAddToCart}
-        className="bg-blue-600 text-white px-3 py-1 rounded mt-2"
-      >
-        Add to Cart
-      </button>
-    </div>
+        <p className="text-base font-medium">${item.price.toFixed(2)}</p>
+      </CardContent>
+      <CardFooter className="flex items-center justify-between">
+        {count > 0 ? (
+          <CartCounter
+            count={count}
+            onIncrement={increment}
+            onDecrement={decrement}
+          />
+        ) : (
+          <button
+            onClick={handleAddClick}
+            className="w-full bg-blue-600 text-white py-1 rounded"
+          >
+            Add to Cart
+          </button>
+        )}
+      </CardFooter>
+    </Card>
   );
-};
-
-export default MenuItemCard;
+}

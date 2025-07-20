@@ -9,12 +9,13 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 3002;
 app.use(
-  cors({
-    origin: "http://localhost:5173",   // front-end dev server
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,                 // if you ever send cookies/JWT in cookies
-  })
+  cors()
+  //   {
+  //   // origin: "http://localhost:5173",   // front-end dev server
+  //   // methods: ["GET", "POST", "PUT", "DELETE"],
+  //   // allowedHeaders: ["Content-Type", "Authorization"],
+  //   // credentials: true,                 // if you ever send cookies/JWT in cookies
+  // }
 );
 // Middlewares
 app.use(bodyParser.json());
@@ -28,5 +29,5 @@ app.use(errorHandler);
 // Connect DB and start server
 connectDB();
 app.listen(PORT, () => {
-    console.log(`Restaurant service running on port ${PORT}`);
+  console.log(`Restaurant service running on port ${PORT}`);
 });

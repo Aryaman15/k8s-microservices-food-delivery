@@ -1,13 +1,24 @@
-FROM node:14-buster
+# Use official Node.js base image
+FROM node:18-alpine
 
+# Set working directory
 WORKDIR /app
 
+# Copy dependency definitions
 COPY package*.json ./
 
+# Install dependencies
 RUN npm install
 
+# Copy source code
 COPY . .
 
-EXPOSE 3002
+# Set default environment variables
+ENV PORT=3001
+ENV MONGO_URI=mongodb://localhost:27017/restaurant-service
 
-CMD ["node", "app.js"]
+# Expose port
+EXPOSE 3001
+
+# Start the service
+CMD ["npm", "start"]

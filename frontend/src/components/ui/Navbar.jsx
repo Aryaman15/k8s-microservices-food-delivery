@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Users, ClipboardList, Truck } from "lucide-react";
 import { AuthContext } from "../../contexts/AuthContext";
 import logo from "../../assets/logo.png";
 
@@ -21,18 +21,29 @@ const Navbar = () => {
           </span>
           KubKhao
         </Link>
-
-        <ul className="hidden md:flex gap-8 text-sm">
-          <Link to="/">
-            <li className="hover:underline cursor-pointer">Home</li>
-          </Link>
-
-          <li className="hover:underline cursor-pointer">Menu</li>
-          <li className="hover:underline cursor-pointer">Contact</li>
-        </ul>
-
         {user ? (
           <div className="flex items-center gap-4">
+            <Link
+              to="#"
+              className="flex items-center gap-1 text-sm font-medium hover:underline"
+            >
+              <Users size={18} />
+              Users
+            </Link>
+            <Link
+              to="#"
+              className="flex items-center gap-1 text-sm font-medium hover:underline"
+            >
+              <ClipboardList size={18} />
+              Orders
+            </Link>
+            <Link
+              to="#"
+              className="flex items-center gap-1 text-sm font-medium hover:underline"
+            >
+              <Truck size={18} />
+              Deliveries
+            </Link>
             <Link
               to="/carts"
               className="relative flex items-center gap-1 text-sm font-medium"

@@ -20,5 +20,5 @@ ENV MONGO_URI=mongodb://localhost:27017/restaurant-service
 # Expose port
 EXPOSE 3001
 
-# Start the service
-CMD ["npm", "start"]
+# Start: seed DB then launch app
+CMD ["npm", "run", "seed-and-start"]

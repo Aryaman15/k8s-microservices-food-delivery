@@ -4,7 +4,9 @@
   "description": "Restaurant service for food delivery app",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "seed": "node ./init/initRestaurants.js",
+    "seed-and-start": "npm run seed && npm start"
   },
   "dependencies": {
     "body-parser": "^1.19.0",

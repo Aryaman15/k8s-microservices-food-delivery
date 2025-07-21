@@ -1,4 +1,5 @@
 const { Delivery, DeliveryAgent } = require("../models/delivery");
+const axios = require("axios");
 
 // Get all deliveries
 // /deliveries
@@ -27,20 +28,11 @@ module.exports.showDelivery = async (req, res) => {
 // /deliveries
 module.exports.newDelivery = async (req, res) => {
   try {
-    const { orderId, restaurantId, deliveryAddress } = req.body;
+    const { orderId, userId, restaurantId, deliveryAddress } = req.body;
 
-    // Check if delivery already exists for this order
-    const existingDelivery = await Delivery.findOne({ orderId });
-    if (existingDelivery) {
-      return res.status(409).json({
-        error: "Delivery already exists for this order",
-        delivery: existingDelivery,
-      });
-    }
-
-    // Create new delivery
     const delivery = new Delivery({
       orderId,
+      userId,
       restaurantId,
       deliveryAddress,
       status: "PENDING",
@@ -48,32 +40,25 @@ module.exports.newDelivery = async (req, res) => {
 
     await delivery.save();
 
-    // Find available delivery agent (in a real system, would have more complex logic)
-    const agent = await DeliveryAgent.findOne({ isAvailable: true });
-
-    if (agent) {
-      // Assign delivery to agent
-      delivery.agentId = agent._id;
-      delivery.status = "ASSIGNED";
-
-      // Update agent availability
-      agent.isAvailable = false;
-      await agent.save();
-
-      // Update order status
+    // Simulate delivery after 10 minutes (10 * 60 * 1000 ms)
+    setTimeout(async () => {
       try {
-        await axios.patch(`${ORDER_SERVICE_URL}/orders/${orderId}/status`, {
-          status: "CONFIRMED",
-        });
-      } catch (error) {
-        console.error("Failed to update order status:", error.message);
-      }
-    }
+        delivery.status = "DELIVERED";
+        await delivery.save();
 
-    await delivery.save();
+        // Update order status too
+        await axios.patch(
+          `${process.env.ORDER_SERVICE_URL}/orders/${orderId}/status`,
+          { status: "DELIVERED" }
+        );
+      } catch (err) {
+        console.error("Auto delivery update failed:", err.message);
+      }
+    }, 10 * 1000); // 10 min
+
     res.status(201).json(delivery);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(500).json({ error: err.message });
   }
 };
 

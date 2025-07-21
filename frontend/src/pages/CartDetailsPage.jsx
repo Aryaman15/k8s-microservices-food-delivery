@@ -2,6 +2,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { fetchCartItems } from "../services/cartService";
+import { placeOrder } from "../services/orderService";
 
 const CartDetailsPage = () => {
   const { id } = useParams();
@@ -18,6 +19,23 @@ const CartDetailsPage = () => {
       })
       .finally(() => setLoading(false));
   }, [id, navigate]);
+
+  const handlePlaceOrder = async () => {
+    try {
+      const res = await placeOrder({
+        restaurantId: items[0].restaurantId,
+        items,
+        deliveryAddress: "123 Main St",
+      });
+      navigate("#");
+      {
+        /*navigate(`/orders/${res._id}`);*/
+      }
+    } catch (err) {
+      console.error("Order placement failed:", err);
+      alert("Failed to place order");
+    }
+  };
 
   const total = items.reduce(
     (sum, item) =>
@@ -72,6 +90,7 @@ const CartDetailsPage = () => {
         </span>
       </div>
       <button
+        onClick={handlePlaceOrder}
         className="w-full mt-8 px-4 py-3 bg-green-600 hover:bg-green-700 transition text-white rounded-lg font-semibold text-lg disabled:opacity-50"
         disabled={items.length === 0}
       >

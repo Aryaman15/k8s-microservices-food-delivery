@@ -46,6 +46,7 @@ const addItemToCart = async (req, res) => {
       item = await CartItem.create({
         cartId: cart._id.toString(),
         menuItemId,
+        restaurantId,
         name,
         price,
         quantity,

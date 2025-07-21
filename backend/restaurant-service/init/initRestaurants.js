@@ -69,6 +69,11 @@ async function seed() {
     await mongoose.connect(MONGO_URI);
     console.log("✅ Connected to MongoDB");
 
+    const existingRestaurants = await Restaurant.find();
+    if (existingRestaurants.length > 0) {
+      console.log("🍽️  Restaurants already seeded. Exiting...");
+      process.exit(0);
+    }
     // Clear existing data
     await Restaurant.deleteMany({});
     await Menu.deleteMany({});

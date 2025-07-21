@@ -21,5 +21,6 @@ ENV JWT_SECRET=supersecretkey
 # Expose port
 EXPOSE 3002
 
+#
 # Start the service
 CMD ["npm", "start"]

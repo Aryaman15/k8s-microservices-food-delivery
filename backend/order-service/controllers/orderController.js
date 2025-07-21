@@ -1,6 +1,6 @@
 const Order = require("../models/order");
 const axios = require("axios");
-const getTotalPrice = require("../utils/getTotalPrice");
+const { getTotalPrice } = require("../utils/getTotalPrice");
 
 // Get all orders
 //"/orders"
@@ -44,11 +44,11 @@ module.exports.newOrder = async (req, res) => {
     const userId = req.user.id;
 
     // Fetch menu & calculate total
-    const { data: restaurantMenu } = await axios.get(
-      `${process.env.RESTAURANT_SERVICE_URL}/restaurants/${restaurantId}/menu`
-    );
+    // const { data: restaurantMenu } = await axios.get(
+    //   `${process.env.RESTAURANT_SERVICE_URL}/restaurants/${restaurantId}/menu`
+    // );
 
-    let totalPrice = getTotalPrice(restaurantMenu, items);
+    let totalPrice = getTotalPrice(items);
 
     // Create order
     const newOrder = new Order({

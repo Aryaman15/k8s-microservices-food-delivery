@@ -22,6 +22,7 @@ const deliverySchema = new mongoose.Schema({
     default: "PENDING",
   },
   deliveryAddress: { type: String, required: true },
+  userId: { type: String, required: true },
   pickupTime: Date,
   deliveryTime: Date,
   createdAt: { type: Date, default: Date.now },

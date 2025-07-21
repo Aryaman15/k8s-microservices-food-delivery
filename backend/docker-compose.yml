@@ -63,10 +63,13 @@ services:
       - PORT=3003
       - MONGO_URI=mongodb://mongo:27017/order-service
       - JWT_SECRET=supersecretkey
+      - RESTAURANT_SERVICE_URL=http://restaurant-service:3001
+      - DELIVERY_SERVICE_URL=http://delivery-service:3005
     depends_on:
       - mongo
       - cart-service
       - user-service
+      - restaurant-service
     networks:
       - backend
 

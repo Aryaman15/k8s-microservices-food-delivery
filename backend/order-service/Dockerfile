@@ -17,6 +17,8 @@ COPY . .
 ENV PORT=3003
 ENV MONGO_URI=mongodb://127.0.0.1:27017/order-service
 ENV JWT_SECRET=supersecretkey
+ENV RESTAURANT_SERVICE_URL=http://restaurant-service:3001
+ENV DELIVERY_SERVICE_URL=http://delivery-service:3005
 
 # Expose the port your service will run on
 EXPOSE 3003

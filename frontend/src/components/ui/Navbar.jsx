@@ -38,7 +38,7 @@ const Navbar = () => {
               Orders
             </Link>
             <Link
-              to="#"
+              to="/deliveries"
               className="flex items-center gap-1 text-sm font-medium hover:underline"
             >
               <Truck size={18} />

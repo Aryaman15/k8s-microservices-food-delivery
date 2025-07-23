@@ -40,21 +40,47 @@ module.exports.newDelivery = async (req, res) => {
 
     await delivery.save();
 
-    // Simulate delivery after 10 minutes (10 * 60 * 1000 ms)
+    // // Simulate delivery after 10 minutes (10 * 60 * 1000 ms)
+    // setTimeout(async () => {
+    //   try {
+    //     delivery.status = "DELIVERED";
+    //     await delivery.save();
+
+    //     // Update order status too
+    //     await axios.patch(
+    //       `${process.env.ORDER_SERVICE_URL}/orders/${orderId}/status`,
+    //       { status: "DELIVERED" }
+    //     );
+    //   } catch (err) {
+    //     console.error("Auto delivery update failed:", err.message);
+    //   }
+    // }, 10 * 1000); // 10 min
+
+    // 1) driver picks up order after 60 s
+    setTimeout(async () => {
+      try {
+        delivery.status = "PICKED_UP";
+        await delivery.save();
+
+        // order now OUT_FOR_DELIVERY
+        await axios.patch(`${process.env.ORDER_SERVICE_URL}/orders/${orderId}/status`,
+          { status: "OUT_FOR_DELIVERY" });
+      } catch (err) {
+        console.error("pickup simulation failed:", err.message);
+      }
+    }, 60 * 1000);
+
+    // 2) delivered five minutes later
     setTimeout(async () => {
       try {
         delivery.status = "DELIVERED";
         await delivery.save();
-
-        // Update order status too
-        await axios.patch(
-          `${process.env.ORDER_SERVICE_URL}/orders/${orderId}/status`,
-          { status: "DELIVERED" }
-        );
+        await axios.patch(`${process.env.ORDER_SERVICE_URL}/orders/${orderId}/status`,
+          { status: "DELIVERED" });
       } catch (err) {
-        console.error("Auto delivery update failed:", err.message);
+        console.error("delivery simulation failed:", err.message);
       }
-    }, 10 * 1000); // 10 min
+    }, 6 * 60 * 1000);        // 1 min + 5 min
 
     res.status(201).json(delivery);
   } catch (err) {
@@ -142,4 +168,20 @@ module.exports.deliveryByOrderId = async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+};
+
+// controllers/deliveryController.js
+module.exports.activeDeliveriesByUser = async (req, res) => {
+  const deliveries = await Delivery.find({
+    userId: req.params.userId,
+    status: { $in: ["PICKED_UP", "ASSIGNED"] },   // still on the way
+  });
+  res.json(deliveries);
+};
+module.exports.activeDeliveriesMe = async (req, res) => {
+  const deliveries = await Delivery.find({
+    userId: req.user.id,
+    status: { $in: ["PICKED_UP", "ASSIGNED"] },
+  });
+  res.json(deliveries);
 };

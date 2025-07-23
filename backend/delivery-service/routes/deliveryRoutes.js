@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const deliveryController = require("../controllers/deliveryController");
 const wrapAsync = require("../utils/wrapAsync");
+const { protect } = require("../middlewares/authMiddleware");
 
 router
   .route("/deliveries")
@@ -18,4 +19,13 @@ router
 router
   .route("/orders/:orderId/delivery")
   .get(wrapAsync(deliveryController.deliveryByOrderId));
+// router.get("/user/:userId/active", wrapAsync(deliveryController.activeDeliveriesByUser));
+
+// router.get(
+//   "/deliveries/user/me/active",
+//   .get)wrapAsync(deliveryController.activeDeliveriesMe)
+// );
+router
+  .route("/deliveries/user/me/active")
+  .get(protect, wrapAsync(deliveryController.activeDeliveriesMe));
 module.exports = router;

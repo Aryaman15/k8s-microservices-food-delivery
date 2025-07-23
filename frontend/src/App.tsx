@@ -12,6 +12,8 @@ import CartsPage from "./pages/CartsPage";
 import CartDetailsPage from "./pages/CartDetailsPage";
 import NotFound from "./pages/NotFound";
 import OrdersPage from "./pages/OrdersPage";    
+import DeliveriesPage from "./pages/DeliveriesPage";
+
 function App() {
   return (
     <BrowserRouter>
@@ -29,6 +31,7 @@ function App() {
           <Route path="/carts" element={<CartsPage />} />
           <Route path="/carts/:id" element={<CartDetailsPage />} />
           <Route path="/orders" element={<OrdersPage />} />
+          <Route path="/deliveries" element={<DeliveriesPage />} />
         </Route>
 
         {/* fallback */}

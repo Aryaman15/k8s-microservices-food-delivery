@@ -61,7 +61,13 @@ module.exports.newOrder = async (req, res) => {
     });
 
     await newOrder.save();
-
+    setTimeout(async () => {
+    try {
+      await Order.findByIdAndUpdate(newOrder._id, { status: "CONFIRMED" });
+    } catch (e) {
+      console.error("auto‑confirm failed:", e.message);
+    }
+  }, 30 * 1000);
     // Notify delivery service
     if (process.env.DELIVERY_SERVICE_URL) {
       try {

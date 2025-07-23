@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const connectDB = require("./config/db");
 const ExpressError = require("./utils/ExpressError");
 const dotenv = require("dotenv");
+const cors = require("cors");
 
 const agentRoutes = require("./routes/agentRoutes");
 const deliveryRoutes = require("./routes/deliveryRoutes");
@@ -12,7 +13,8 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3004;
-
+app.use(cors({ origin: "http://localhost:5173" }));
+app.use(express.json());
 // Middleware
 app.use(bodyParser.json());
 

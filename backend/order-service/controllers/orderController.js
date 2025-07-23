@@ -116,3 +116,15 @@ module.exports.updateOrderStatus = async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 };
+
+
+module.exports.myOrders = async (req, res) => {
+  try {
+    const orders = await Order
+      .find({ userId: req.user.id })
+      .sort({ createdAt: -1 });      // newest first
+    res.json(orders);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

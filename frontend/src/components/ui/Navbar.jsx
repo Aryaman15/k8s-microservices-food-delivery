@@ -31,7 +31,7 @@ const Navbar = () => {
               Users
             </Link>
             <Link
-              to="#"
+              to="/orders"
               className="flex items-center gap-1 text-sm font-medium hover:underline"
             >
               <ClipboardList size={18} />
